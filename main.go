@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/golangci/golangci-lint/pkg/golinters/intrange"
 )
 
 type Event struct {
@@ -12,12 +10,19 @@ type Event struct {
 	Payload   string
 }
 
+func New(start, end int) []int {
+	result := make([]int, end-start+1)
+	for i := start; i <= end; i++ {
+		result[i-start] = i
+	}
+
+	return result
+}
 func main() {
 	events := []Event{}
 
 	// Simulating writing 1 million events
-	for _, i := range intrange.New(0, 1000000) {
-
+	for _, i := range New(0, 1000000) {
 		fmt.Println("Processing event", i)
 		events = append(events, Event{
 			Timestamp: time.Now(),
