@@ -18,11 +18,13 @@ func New(start, end int) []int {
 
 	return result
 }
+
 func main() {
 	events := []Event{}
+	noOfEvents := 1000000
 
 	// Simulating writing 1 million events
-	for _, i := range New(0, 1000000) {
+	for _, i := range New(0, noOfEvents) {
 		fmt.Println("Processing event", i)
 		events = append(events, Event{
 			Timestamp: time.Now(),
