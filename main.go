@@ -2,48 +2,39 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"net/http"
+	"sync"
 	"time"
 )
 
-type Event struct {
-	Timestamp time.Time
-	Payload   string
-}
+func sendRequest(wg *sync.WaitGroup, client *http.Client) {
+	defer wg.Done()
 
-func New(start, end int) []int {
-	result := make([]int, end-start+1)
-	for i := start; i <= end; i++ {
-		result[i-start] = i
+	_, err := client.Get("http://localhost:8080/api")
+	if err != nil {
+		fmt.Println("Error sending request:", err)
 	}
-
-	return result
 }
 
 func main() {
-	events := []Event{}
-	noOfEvents := 1000000
+	var wg sync.WaitGroup
+	client := &http.Client{Timeout: time.Second * 5}
 
-	for _, i := range New(0, noOfEvents) {
-		log.Println("Processing event", i)
-		events = append(events, Event{
-			Timestamp: time.Now(),
-			Payload:   fmt.Sprintf("Event %d", i),
-		})
-	}
-
+	noOfRequests := 5000
 	start := time.Now()
 
-	for _, event := range events {
-		log.Println("Querying event: ", event.Payload)
+	for i := 0; i < noOfRequests; i++ {
+		wg.Add(1)
 
-		if event.Timestamp.Before(time.Now()) {
-			if time.Since(start) > time.Second {
-				log.Println("Querytime exceeded threshold")
-				break
-			}
-		}
+		go sendRequest(&wg, client)
 	}
 
-	log.Println("Success")
+	wg.Wait()
+	fmt.Printf("Completed %d requests in %v\n", noOfRequests, time.Since(start))
 }
+
+// figure out why what does timeout for the client and server means
+// why timeout server
+// why all 12 cores CPU 100% when time out
+// what is going here
+// good opportunity to practice I/O and concurrency
