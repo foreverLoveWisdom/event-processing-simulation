@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -24,7 +25,7 @@ func main() {
 	noOfEvents := 1000000
 
 	for _, i := range New(0, noOfEvents) {
-		fmt.Println("Processing event", i)
+		log.Println("Processing event", i)
 		events = append(events, Event{
 			Timestamp: time.Now(),
 			Payload:   fmt.Sprintf("Event %d", i),
@@ -34,15 +35,15 @@ func main() {
 	start := time.Now()
 
 	for _, event := range events {
-		fmt.Println("Querying event: ", event.Payload)
+		log.Println("Querying event: ", event.Payload)
 
 		if event.Timestamp.Before(time.Now()) {
 			if time.Since(start) > time.Second {
-				fmt.Println("Querytime exceeded threshold")
+				log.Println("Querytime exceeded threshold")
 				break
 			}
 		}
 	}
 
-	fmt.Println("Success")
+	log.Println("Success")
 }
