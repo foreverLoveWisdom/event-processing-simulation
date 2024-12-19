@@ -18,9 +18,9 @@ func sendRequest(wg *sync.WaitGroup, client *http.Client) {
 
 func main() {
 	var wg sync.WaitGroup
-	client := &http.Client{Timeout: time.Second * 5}
+	client := &http.Client{Timeout: time.Second * 10}
 
-	noOfRequests := 5000
+	noOfRequests := 25000
 	start := time.Now()
 
 	for i := 0; i < noOfRequests; i++ {
